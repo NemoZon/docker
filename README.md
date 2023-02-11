@@ -298,4 +298,18 @@ docker build . -t my-image:4.1.3
 >```
 > ![Dockerfile](https://github.com/NemoZon/MDimages/raw/main/docker/my-calendar1.png)
 
-#### **Node app: my-calendar** 
+#### **Node app: my-file-writer** 
+
+> В папке node-app я создал index.mjs записывает текст в файл my-file.txt, и написал Dockerfile
+
+> Создам свой образ из этого Dockerfile
+>```shell
+>   docker build ./node-app/ -t my-file-writer
+>```
+
+> Создадим контейнер из нашего образа
+>```shell
+>   docker run -it my-file-writer
+>```
+> Контейнер создает файл внутри себя и при этом его нету в папке хоста
+    
