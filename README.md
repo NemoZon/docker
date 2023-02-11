@@ -4,6 +4,8 @@
 
 <a href="https://docs.docker.com/engine/install/ubuntu/">Docker engine для Ubuntu</a>
 
+<a href="https://docs.docker.com/desktop/install/linux-install/">Docker Desktop для Ubuntu</a>
+
 <a href="https://itsecforu.ru/2018/04/12/%D0%BA%D0%B0%D0%BA-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-docker-%D0%B1%D0%B5%D0%B7-sudo-%D0%BD%D0%B0-ubuntu/">Как использовать docker без sudo на ubuntu</a>
 
 <a href="https://hub.docker.com/">DockerHub</a>
@@ -91,7 +93,14 @@
 >   docker run -v YourDirPath:ContainerDirPath IMAGE-NAME
 >```
 
+> Автоматическое удаление контейнера с помощью флага --rm при остановке процесса контейнера
+>```shell
+>   docker run --rm IMAGE-NAME
+>```
+
 ## Основные действия сделанные в процессе туториала
+
+### Введение
 
 > Создаем и запускаем контейнер по образу <a href="https://hub.docker.com/_/hello-world">hello-world</a>, который выведет инструкцию о том, как Докер создает контейнер из DockerHub 
 >```shell
@@ -188,6 +197,16 @@
 > *Я использую переменную ${PWD}, так как нахожусь в папке nginx <br>
 > Перейдем на localhost:8080 и убедимся, что страница поменялась
 
+> Проверим присутствие тома, он расположен в значении с ключом "Mounts"
+>```shell
+>   docker inspect 44db02c2c35e
+>```
+
+> Проверим присутствие внешнего порта, он расположен в значении с ключом "Ports"
+>```shell
+>   docker inspect 44db02c2c35e
+>```
+
 > Перейдем в bash контейнера и убедимся, что index.html берется из папки nginx
 >```shell
 >   docker exec -it 44db02c2c35e bash
@@ -197,3 +216,15 @@
 > ![Image alt](https://github.com/NemoZon/MDimages/raw/main/docker/ss2.png)
 
 > Так же я создал script.js и style.css, которые так же присутствуют в /usr/share/nginx/html контейнера
+
+> Команды становятся слишком длинными и не читаемыми, для этого можно разбивать команду на строки с помощью \
+> Пример:
+>```shell
+>   docker run \
+>       --name my_nginx \
+>       -v ${PWD}:usr/share/nginx/html \
+>       -p 8080:80 \
+>       -d \
+>       --rm \
+>       nginx
+>```
