@@ -90,7 +90,6 @@
 >```shell
 >   docker run -v YourDirPath:ContainerDirPath IMAGE-NAME
 >```
-> PS Порт контейнеров можно узнать с помощью *docker ps -a*
 
 ## Основные действия сделанные в процессе туториала
 
