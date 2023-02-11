@@ -106,13 +106,13 @@
 >```shell
 >   docker run hello-world
 >```
->![Image alt](https://github.com/NemoZon/MDimages/raw/main/docker/ss0.png)
+>![screenshot](https://github.com/NemoZon/MDimages/raw/main/docker/ss0.png)
 
 > Проверяем наличие контейнера
 >```shell
 >   docker ps -a
 >```
->![Image alt](https://github.com/NemoZon/MDimages/raw/main/docker/ss1.png)
+>![screenshot](https://github.com/NemoZon/MDimages/raw/main/docker/ss1.png)
 
 > Удаляем контейнер
 >```shell
@@ -213,7 +213,7 @@
 >   cd /usr/share/nginx/html/
 >   cat index.html
 >```
-> ![Image alt](https://github.com/NemoZon/MDimages/raw/main/docker/ss2.png)
+> ![screenshot](https://github.com/NemoZon/MDimages/raw/main/docker/ss2.png)
 
 > Так же я создал script.js и style.css, которые так же присутствуют в /usr/share/nginx/html контейнера
 
@@ -228,3 +228,74 @@
 >       --rm \
 >       nginx
 >```
+
+### Создание собственных образов
+
+Этапы создания образов:
+
+1) Для создания образа необходим Dockerfile
+2) Обычно Dockerfile помещают **в корне** папки приложения
+3) Dockerfile содержит инструкции по созданию образа
+4) При создании образа **желательно** указать **имя** и **тег** для образа
+5) На основании готового образа можно создавать контейнеры
+
+Пример Dockerfile:
+![Dockerfile](https://github.com/NemoZon/MDimages/raw/main/docker/dockerfile.png)
+
+Тут есть 4 инструкции:
+
+1) FROM python:alpine *указывает на базовый образ "python" с тегом/версией "alpine"*
+2) WORKDIR /app *создается рабочая директория внутри образа. Рекомендуется всегда создавать папку внутри образа, так как лучше не помещать ваши файлы в корневой каталог*
+3) COPY . . *копируем все файлы из локальной папки в /app*
+4) CMD [ "python", "main.py" ] *указывается команда, которая запустится, когда создастся контейнер на основании этого образа, здесь запускается процесс "python" с аргументом "main.py"*
+
+После сохранения файла, создать образ можно с командой:
+```shell
+docker build DockerfileDirPath
+```
+
+Если имя Dockerfile отличается, то используется флаг -f 
+```shell
+docker build . -f Dockerfiledev
+```
+
+Добавить имя и тег для образа с помощью -t, если тег опущен, то Докер заменит его на latest
+```shell
+docker build . -t my-image:4.1.3
+```
+
+#### **Python app: my-calendar** 
+> В папке python-app я создал main.py который выводит календарь, и скопировал Dockerfile из примера
+
+> Создам свой образ из этого Dockerfile
+>```shell
+>   docker build ./python-app/ -t my-calendar
+>```
+
+> Проверим присутствие нашего образа
+>```shell
+>   docker images
+>```
+
+> Создадим контейнер из нашего образа
+>```shell
+>   docker run -it my-calendar
+>```
+>![Logs](https://github.com/NemoZon/MDimages/raw/main/docker/my-calendar.png)
+
+> Изменим main.py, чтобы он выводил "Hello ${USERNAME}"
+
+> Создадим другую версию образа
+>```shell
+>   docker build ./python-app/ -t my-calendar:2.0
+>```
+> ![Dockerfile](https://github.com/NemoZon/MDimages/raw/main/docker/dockerfile1.png)
+> Мы видим, что второй слой закеширован CACHED, так как он не менялся и мы его просто переиспользуем
+
+> Создадим контейнер из нашего нового образа
+>```shell
+>   docker run -it my-calendar:2.0
+>```
+> ![Dockerfile](https://github.com/NemoZon/MDimages/raw/main/docker/my-calendar1.png)
+
+#### **Node app: my-calendar** 
